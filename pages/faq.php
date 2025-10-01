@@ -111,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = 'Erro na importação: ' . $e->getMessage();
         }
     } elseif (isset($_POST['save_faq'])) {
-    if (isset($_POST['save_faq'])) {
         $question = $_POST['question'];
         $answer = $_POST['answer'];
         
