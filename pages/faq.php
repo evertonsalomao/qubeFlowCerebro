@@ -170,7 +170,7 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <p class="mb-0"><?php echo nl2br(htmlspecialchars($faq['answer'])); ?></p>
                                             </div>
                                             <div class="ms-3">
-                                                <div class="btn-group-vertical btn-group-sm" role="group">
+                                                <div class="btn-group btn-group-sm" role="group">
                                                     <?php if ($index > 0): ?>
                                                         <form method="POST" class="d-inline">
                                                             <input type="hidden" name="faq_id" value="<?php echo $faq['id']; ?>">
@@ -191,7 +191,7 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                         </form>
                                                     <?php endif; ?>
                                                     
-                                                    <a href="#" class="dropdown-item edit-faq-btn"
+                                                    <a href="#" class="btn btn-outline-primary btn-sm edit-faq-btn"
                                                        data-id="<?php echo $faq['id']; ?>"
                                                        data-question="<?php echo htmlspecialchars($faq['question']); ?>"
                                                        data-answer="<?php echo htmlspecialchars($faq['answer']); ?>"
@@ -256,20 +256,22 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-// Função para limpar o formulário (nova pergunta)
-function clearFaqForm() {
-    document.getElementById('faqModalTitle').textContent = 'Nova Pergunta';
-    document.getElementById('faqId').value = '';
-    document.getElementById('question').value = '';
-    document.getElementById('answer').value = '';
-}
-
-// Event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Limpar formulário quando abrir modal para nova pergunta
-    document.querySelector('[data-bs-target="#faqModal"]:not(.edit-faq-btn)').addEventListener('click', function() {
-        clearFaqForm();
-    });
+    // Função para limpar o formulário (nova pergunta)
+    function clearFaqForm() {
+        document.getElementById('faqModalTitle').textContent = 'Nova Pergunta';
+        document.getElementById('faqId').value = '';
+        document.getElementById('question').value = '';
+        document.getElementById('answer').value = '';
+    }
+    
+    // Event listener para botão "Nova Pergunta"
+    const newFaqBtn = document.querySelector('.btn[data-bs-target="#faqModal"]:not(.edit-faq-btn)');
+    if (newFaqBtn) {
+        newFaqBtn.addEventListener('click', function() {
+            clearFaqForm();
+        });
+    }
     
     // Event listener para botões de editar
     document.querySelectorAll('.edit-faq-btn').forEach(function(btn) {
