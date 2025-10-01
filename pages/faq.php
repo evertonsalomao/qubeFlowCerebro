@@ -22,6 +22,95 @@ $error = '';
 
 // Processar formulário
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['import_csv']) && isset($_FILES['csv_file'])) {
+        try {
+            $file = $_FILES['csv_file'];
+            
+            // Verificar se o arquivo foi enviado sem erros
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception('Erro no upload do arquivo.');
+            }
+            
+            // Verificar extensão do arquivo
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if ($ext !== 'csv') {
+                throw new Exception('Apenas arquivos CSV são permitidos.');
+            }
+            
+            // Ler o arquivo CSV
+            $handle = fopen($file['tmp_name'], 'r');
+            if (!$handle) {
+                throw new Exception('Não foi possível ler o arquivo.');
+            }
+            
+            $imported = 0;
+            $errors = [];
+            $line = 0;
+            
+            // Buscar próximo order_index
+            $query = "SELECT COALESCE(MAX(order_index), -1) + 1 as next_order FROM faqs WHERE company_id = :company_id";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':company_id', $company['id']);
+            $stmt->execute();
+            $next_order = $stmt->fetch(PDO::FETCH_ASSOC)['next_order'];
+            
+            while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                $line++;
+                
+                // Pular linha vazia
+                if (empty($data[0]) && empty($data[1])) {
+                    continue;
+                }
+                
+                // Verificar se tem pelo menos 2 colunas
+                if (count($data) < 2) {
+                    $errors[] = "Linha $line: Formato inválido (precisa ter pergunta e resposta)";
+                    continue;
+                }
+                
+                $question = trim($data[0]);
+                $answer = trim($data[1]);
+                
+                // Verificar se pergunta e resposta não estão vazias
+                if (empty($question) || empty($answer)) {
+                    $errors[] = "Linha $line: Pergunta ou resposta vazia";
+                    continue;
+                }
+                
+                // Inserir no banco
+                $query = "INSERT INTO faqs (company_id, question, answer, order_index) VALUES (:company_id, :question, :answer, :order_index)";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':company_id', $company['id']);
+                $stmt->bindParam(':question', $question);
+                $stmt->bindParam(':answer', $answer);
+                $stmt->bindParam(':order_index', $next_order);
+                
+                if ($stmt->execute()) {
+                    $imported++;
+                    $next_order++;
+                } else {
+                    $errors[] = "Linha $line: Erro ao salvar no banco de dados";
+                }
+            }
+            
+            fclose($handle);
+            
+            if ($imported > 0) {
+                $success = "Importação concluída! $imported pergunta(s) importada(s).";
+                if (!empty($errors)) {
+                    $success .= " Alguns erros ocorreram: " . implode(', ', array_slice($errors, 0, 3));
+                    if (count($errors) > 3) {
+                        $success .= " e mais " . (count($errors) - 3) . " erro(s).";
+                    }
+                }
+            } else {
+                $error = "Nenhuma pergunta foi importada. Erros: " . implode(', ', $errors);
+            }
+            
+        } catch (Exception $e) {
+            $error = 'Erro na importação: ' . $e->getMessage();
+        }
+    } elseif (isset($_POST['save_faq'])) {
     if (isset($_POST['save_faq'])) {
         $question = $_POST['question'];
         $answer = $_POST['answer'];
@@ -125,6 +214,9 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
                         <i class="bi bi-plus me-2"></i>Nova Pergunta
+                    </button>
+                    <button class="btn btn-success btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="bi bi-upload me-2"></i>Importar CSV
                     </button>
                 </div>
             </div>
