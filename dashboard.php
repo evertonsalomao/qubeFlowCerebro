@@ -1,0 +1,155 @@
+<?php
+require_once 'includes/auth.php';
+requireLogin();
+
+$user = getCurrentUser();
+$activeTab = $_GET['tab'] ?? 'company';
+
+// Buscar empresa do usuário
+require_once 'config/database.php';
+$database = new Database();
+$db = $database->getConnection();
+
+$query = "SELECT * FROM companies WHERE user_id = :user_id";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':user_id', $_SESSION['user_id']);
+$stmt->execute();
+$company = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 15px 20px;
+            margin: 5px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #059669, #10b981);
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            border: none;
+            border-radius: 10px;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar">
+                    <div class="p-4 text-center">
+                        <i class="bi bi-building text-white" style="font-size: 2rem;"></i>
+                        <h4 class="text-white mt-2">Sistema IA</h4>
+                        <small class="text-white-50"><?php echo htmlspecialchars($user['email']); ?></small>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link <?php echo $activeTab == 'company' ? 'active' : ''; ?>" href="?tab=company">
+                            <i class="bi bi-building me-2"></i>Empresa
+                        </a>
+                        <a class="nav-link <?php echo $activeTab == 'addresses' ? 'active' : ''; ?>" href="?tab=addresses">
+                            <i class="bi bi-geo-alt me-2"></i>Endereços
+                        </a>
+                        <a class="nav-link <?php echo $activeTab == 'faq' ? 'active' : ''; ?>" href="?tab=faq">
+                            <i class="bi bi-question-circle me-2"></i>FAQ
+                        </a>
+                        <a class="nav-link <?php echo $activeTab == 'general' ? 'active' : ''; ?>" href="?tab=general">
+                            <i class="bi bi-info-circle me-2"></i>Informações Gerais
+                        </a>
+                    </nav>
+                    
+                    <div class="position-absolute bottom-0 w-100 p-3">
+                        <?php if ($company): ?>
+                            <a href="public.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-success btn-sm w-100 mb-2">
+                                <i class="bi bi-eye me-2"></i>Ver Página Pública
+                            </a>
+                        <?php endif; ?>
+                        <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
+                            <i class="bi bi-box-arrow-right me-2"></i>Sair
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content p-4">
+                    <?php
+                    switch($activeTab) {
+                        case 'company':
+                            include 'pages/company.php';
+                            break;
+                        case 'addresses':
+                            include 'pages/addresses.php';
+                            break;
+                        case 'faq':
+                            include 'pages/faq.php';
+                            break;
+                        case 'general':
+                            include 'pages/general.php';
+                            break;
+                        default:
+                            include 'pages/company.php';
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

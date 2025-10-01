@@ -1,0 +1,29 @@
+RewriteEngine On
+
+# Redirect to login if accessing root
+RewriteRule ^$ login.php [L]
+
+# Pretty URLs for public pages
+RewriteRule ^empresa/([a-zA-Z0-9\-]+)/?$ public.php?slug=$1 [L,QSA]
+
+# Security
+<Files "config/*">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "database/*">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "includes/*">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# PHP Settings
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_vars 3000
