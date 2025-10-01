@@ -1,9 +1,9 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'ai_agent_system';
-    private $username = 'root';
-    private $password = '';
+    private $db_name = 'qubeflowcom_cerebro';
+    private $username = 'qubeflowcom_cerebro';
+    private $password = 'NhIo0VoOvBSYIbxl';
     public $conn;
 
     public function getConnection() {
