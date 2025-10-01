@@ -278,3 +278,4 @@ document.addEventListener('DOMContentLoaded', function() {
         newFaqBtn.addEventListener('click', clearFaqForm);
     }
 });
+</script>
