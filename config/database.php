@@ -1,8 +1,8 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'qubeflowcom_cerebro';
-    private $username = 'qubeflowcom_cerebro';
+    private $db_name = 'brainqubeflowcom_cerebro';
+    private $username = 'brainqubeflowcom_cerebro';
     private $password = 'NhIo0VoOvBSYIbxl';
     public $conn;
 
