@@ -112,16 +112,6 @@ $stmt->bindParam(':company_id', $company['id']);
 $stmt->execute();
 $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// FAQ para edição
-$editFaq = null;
-if (isset($_GET['edit'])) {
-    foreach ($faqs as $faq) {
-        if ($faq['id'] == $_GET['edit']) {
-            $editFaq = $faq;
-            break;
-        }
-    }
-}
 ?>
 
 <div class="row">
@@ -201,8 +191,11 @@ if (isset($_GET['edit'])) {
                                                         </form>
                                                     <?php endif; ?>
                                                     
-                                                    <a href="?tab=faq&edit=<?php echo $faq['id']; ?>" 
-                                                       class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
+                                                    <a href="#" class="dropdown-item edit-faq-btn"
+                                                       data-id="<?php echo $faq['id']; ?>"
+                                                       data-question="<?php echo htmlspecialchars($faq['question']); ?>"
+                                                       data-answer="<?php echo htmlspecialchars($faq['answer']); ?>"
+                                                       data-bs-toggle="modal" data-bs-target="#faqModal">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     
@@ -232,25 +225,23 @@ if (isset($_GET['edit'])) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="bi bi-question-circle me-2"></i><?php echo $editFaq ? 'Editar Pergunta' : 'Nova Pergunta'; ?>
+                    <i class="bi bi-question-circle me-2"></i><span id="faqModalTitle">Nova Pergunta</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
                 <div class="modal-body">
-                    <?php if ($editFaq): ?>
-                        <input type="hidden" name="faq_id" value="<?php echo $editFaq['id']; ?>">
-                    <?php endif; ?>
+                    <input type="hidden" name="faq_id" id="faqId" value="">
                     
                     <div class="mb-3">
                         <label for="question" class="form-label">Pergunta *</label>
                         <input type="text" class="form-control" id="question" name="question" 
-                               value="<?php echo htmlspecialchars($editFaq['question'] ?? ''); ?>" required>
+                               value="" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="answer" class="form-label">Resposta *</label>
-                        <textarea class="form-control" id="answer" name="answer" rows="5" required><?php echo htmlspecialchars($editFaq['answer'] ?? ''); ?></textarea>
+                        <textarea class="form-control" id="answer" name="answer" rows="5" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -264,11 +255,32 @@ if (isset($_GET['edit'])) {
     </div>
 </div>
 
-<?php if ($editFaq): ?>
 <script>
+// Função para limpar o formulário (nova pergunta)
+function clearFaqForm() {
+    document.getElementById('faqModalTitle').textContent = 'Nova Pergunta';
+    document.getElementById('faqId').value = '';
+    document.getElementById('question').value = '';
+    document.getElementById('answer').value = '';
+}
+
+// Event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    var modal = new bootstrap.Modal(document.getElementById('faqModal'));
-    modal.show();
+    // Limpar formulário quando abrir modal para nova pergunta
+    document.querySelector('[data-bs-target="#faqModal"]:not(.edit-faq-btn)').addEventListener('click', function() {
+        clearFaqForm();
+    });
+    
+    // Event listener para botões de editar
+    document.querySelectorAll('.edit-faq-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Preencher o formulário com os dados da FAQ
+            document.getElementById('faqModalTitle').textContent = 'Editar Pergunta';
+            document.getElementById('faqId').value = this.dataset.id;
+            document.getElementById('question').value = this.dataset.question;
+            document.getElementById('answer').value = this.dataset.answer;
+        });
+    });
 });
-</script>
-<?php endif; ?>
