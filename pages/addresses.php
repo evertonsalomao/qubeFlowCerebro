@@ -140,14 +140,22 @@ if (isset($_GET['edit'])) {
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-3 position-relative">
                                             <h5 class="card-title text-primary"><?php echo htmlspecialchars($address['name']); ?></h5>
-                                            <div class="dropdown">
+                                            <div class="dropdown" style="z-index: 1050;">
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="?tab=addresses&edit=<?php echo $address['id']; ?>" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item edit-address-btn" href="#" 
+                                                           data-id="<?php echo $address['id']; ?>"
+                                                           data-name="<?php echo htmlspecialchars($address['name']); ?>"
+                                                           data-address="<?php echo htmlspecialchars($address['address']); ?>"
+                                                           data-phone="<?php echo htmlspecialchars($address['phone']); ?>"
+                                                           data-whatsapp="<?php echo htmlspecialchars($address['whatsapp']); ?>"
+                                                           data-business_hours="<?php echo htmlspecialchars($address['business_hours']); ?>"
+                                                           data-additional_info="<?php echo htmlspecialchars($address['additional_info']); ?>"
+                                                           data-bs-toggle="modal" data-bs-target="#addressModal">
                                                         <i class="bi bi-pencil me-2"></i>Editar
                                                     </a></li>
                                                     <li><hr class="dropdown-divider"></li>
@@ -211,50 +219,48 @@ if (isset($_GET['edit'])) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="bi bi-geo-alt me-2"></i><?php echo $editAddress ? 'Editar Endereço' : 'Novo Endereço'; ?>
+                    <i class="bi bi-geo-alt me-2"></i><span id="modalTitle">Novo Endereço</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
                 <div class="modal-body">
-                    <?php if ($editAddress): ?>
-                        <input type="hidden" name="address_id" value="<?php echo $editAddress['id']; ?>">
-                    <?php endif; ?>
+                    <input type="hidden" name="address_id" id="addressId" value="">
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name" class="form-label">Nome da Unidade *</label>
                             <input type="text" class="form-control" id="name" name="name" 
-                                   value="<?php echo htmlspecialchars($editAddress['name'] ?? ''); ?>" required>
+                                   value="" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="business_hours" class="form-label">Horário de Funcionamento</label>
                             <input type="text" class="form-control" id="business_hours" name="business_hours" 
-                                   value="<?php echo htmlspecialchars($editAddress['business_hours'] ?? ''); ?>">
+                                   value="">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="address" class="form-label">Endereço Completo</label>
-                        <textarea class="form-control" id="address" name="address" rows="3"><?php echo htmlspecialchars($editAddress['address'] ?? ''); ?></textarea>
+                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="phone" class="form-label">Telefone</label>
                             <input type="tel" class="form-control" id="phone" name="phone" 
-                                   value="<?php echo htmlspecialchars($editAddress['phone'] ?? ''); ?>">
+                                   value="">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="whatsapp" class="form-label">WhatsApp</label>
                             <input type="tel" class="form-control" id="whatsapp" name="whatsapp" 
-                                   value="<?php echo htmlspecialchars($editAddress['whatsapp'] ?? ''); ?>">
+                                   value="">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="additional_info" class="form-label">Informações Adicionais</label>
-                        <textarea class="form-control" id="additional_info" name="additional_info" rows="3"><?php echo htmlspecialchars($editAddress['additional_info'] ?? ''); ?></textarea>
+                        <textarea class="form-control" id="additional_info" name="additional_info" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -268,11 +274,36 @@ if (isset($_GET['edit'])) {
     </div>
 </div>
 
-<?php if ($editAddress): ?>
 <script>
+// Função para limpar o formulário (novo endereço)
+function clearAddressForm() {
+    document.getElementById('modalTitle').textContent = 'Novo Endereço';
+    document.getElementById('addressId').value = '';
+    document.getElementById('name').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('whatsapp').value = '';
+    document.getElementById('business_hours').value = '';
+    document.getElementById('additional_info').value = '';
+}
+
+// Função para preencher o formulário (editar endereço)
 document.addEventListener('DOMContentLoaded', function() {
-    var modal = new bootstrap.Modal(document.getElementById('addressModal'));
-    modal.show();
+    // Event listener para botões de editar
+    document.querySelectorAll('.edit-address-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Preencher o formulário com os dados do endereço
+            document.getElementById('modalTitle').textContent = 'Editar Endereço';
+            document.getElementById('addressId').value = this.dataset.id;
+            document.getElementById('name').value = this.dataset.name;
+            document.getElementById('address').value = this.dataset.address;
+            document.getElementById('phone').value = this.dataset.phone;
+            document.getElementById('whatsapp').value = this.dataset.whatsapp;
+            document.getElementById('business_hours').value = this.dataset.business_hours;
+            document.getElementById('additional_info').value = this.dataset.additional_info;
+        });
+    });
 });
 </script>
-<?php endif; ?>
