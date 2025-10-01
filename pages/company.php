@@ -1,4 +1,9 @@
 <?php
+if (!$company) {
+    echo '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Selecione uma empresa para gerenciar seus dados.</div>';
+    return;
+}
+
 $success = '';
 $error = '';
 
@@ -16,16 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Atualizar empresa existente
             $query = "UPDATE companies SET name = :name, cnpj = :cnpj, main_address = :main_address, 
                      main_phone = :main_phone, main_whatsapp = :main_whatsapp, business_hours = :business_hours, 
-                     slug = :slug, updated_at = NOW() WHERE id = :id";
+                     slug = :slug, updated_at = NOW() WHERE id = :id AND user_id = :user_id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':id', $company['id']);
-        } else {
-            // Criar nova empresa
-            $query = "INSERT INTO companies (user_id, name, cnpj, main_address, main_phone, main_whatsapp, 
-                     business_hours, slug) VALUES (:user_id, :name, :cnpj, :main_address, :main_phone, 
-                     :main_whatsapp, :business_hours, :slug)";
-            $stmt = $db->prepare($query);
             $stmt->bindParam(':user_id', $_SESSION['user_id']);
+        } else {
+            echo '<div class="alert alert-danger">Empresa não encontrada.</div>';
+            return;
         }
         
         $stmt->bindParam(':name', $name);
@@ -39,8 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             $success = 'Dados da empresa salvos com sucesso!';
             // Recarregar dados da empresa
-            $query = "SELECT * FROM companies WHERE user_id = :user_id";
+            $query = "SELECT * FROM companies WHERE id = :id AND user_id = :user_id";
             $stmt = $db->prepare($query);
+            $stmt->bindParam(':id', $company['id']);
             $stmt->bindParam(':user_id', $_SESSION['user_id']);
             $stmt->execute();
             $company = $stmt->fetch(PDO::FETCH_ASSOC);

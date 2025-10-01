@@ -1,6 +1,19 @@
 <?php
-if (!$company) {
+if (!$company_id) {
     echo '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Configure primeiro os dados da empresa para poder gerenciar informações gerais.</div>';
+    return;
+}
+
+// Verificar se a empresa pertence ao usuário
+$query = "SELECT * FROM companies WHERE id = :id AND user_id = :user_id";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':id', $company_id);
+$stmt->bindParam(':user_id', $_SESSION['user_id']);
+$stmt->execute();
+$company = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$company) {
+    echo '<div class="alert alert-danger">Empresa não encontrada ou sem permissão.</div>';
     return;
 }
 
@@ -11,10 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $general_info = $_POST['general_info'] ?? '';
     
     try {
-        $query = "UPDATE companies SET general_info = :general_info, updated_at = NOW() WHERE id = :id";
+        $query = "UPDATE companies SET general_info = :general_info, updated_at = NOW() WHERE id = :id AND user_id = :user_id";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':general_info', $general_info);
         $stmt->bindParam(':id', $company['id']);
+        $stmt->bindParam(':user_id', $_SESSION['user_id']);
         
         if ($stmt->execute()) {
             $success = 'Informações gerais salvas com sucesso!';

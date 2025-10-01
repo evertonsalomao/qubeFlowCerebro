@@ -1,6 +1,19 @@
 <?php
-if (!$company) {
+if (!$company_id) {
     echo '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Configure primeiro os dados da empresa para poder cadastrar perguntas e respostas.</div>';
+    return;
+}
+
+// Verificar se a empresa pertence ao usuário
+$query = "SELECT * FROM companies WHERE id = :id AND user_id = :user_id";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':id', $company_id);
+$stmt->bindParam(':user_id', $_SESSION['user_id']);
+$stmt->execute();
+$company = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$company) {
+    echo '<div class="alert alert-danger">Empresa não encontrada ou sem permissão.</div>';
     return;
 }
 

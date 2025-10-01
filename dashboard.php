@@ -3,18 +3,30 @@ require_once 'includes/auth.php';
 requireLogin();
 
 $user = getCurrentUser();
-$activeTab = $_GET['tab'] ?? 'company';
+$activeTab = $_GET['tab'] ?? 'companies';
+$company_id = $_GET['company_id'] ?? null;
 
-// Buscar empresa do usuário
+// Buscar empresas do usuário
 require_once 'config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-$query = "SELECT * FROM companies WHERE user_id = :user_id";
+$query = "SELECT * FROM companies WHERE user_id = :user_id ORDER BY name";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':user_id', $_SESSION['user_id']);
 $stmt->execute();
-$company = $stmt->fetch(PDO::FETCH_ASSOC);
+$companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Buscar empresa específica se selecionada
+$company = null;
+if ($company_id) {
+    foreach ($companies as $comp) {
+        if ($comp['id'] == $company_id) {
+            $company = $comp;
+            break;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -97,26 +109,40 @@ $company = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                     
                     <nav class="nav flex-column">
-                        <a class="nav-link <?php echo $activeTab == 'company' ? 'active' : ''; ?>" href="?tab=company">
-                            <i class="bi bi-building me-2"></i>Empresa
+                        <a class="nav-link <?php echo $activeTab == 'companies' ? 'active' : ''; ?>" href="?tab=companies">
+                            <i class="bi bi-buildings me-2"></i>Minhas Empresas
                         </a>
-                        <a class="nav-link <?php echo $activeTab == 'addresses' ? 'active' : ''; ?>" href="?tab=addresses">
-                            <i class="bi bi-geo-alt me-2"></i>Endereços
-                        </a>
-                        <a class="nav-link <?php echo $activeTab == 'faq' ? 'active' : ''; ?>" href="?tab=faq">
-                            <i class="bi bi-question-circle me-2"></i>FAQ
-                        </a>
-                        <a class="nav-link <?php echo $activeTab == 'general' ? 'active' : ''; ?>" href="?tab=general">
-                            <i class="bi bi-info-circle me-2"></i>Informações Gerais
-                        </a>
+                        
+                        <?php if ($company): ?>
+                            <div class="px-3 py-2">
+                                <small class="text-white-50 text-uppercase">Empresa Atual</small>
+                                <div class="text-white fw-bold small"><?php echo htmlspecialchars($company['name']); ?></div>
+                            </div>
+                            
+                            <a class="nav-link <?php echo $activeTab == 'company' ? 'active' : ''; ?>" href="?tab=company&company_id=<?php echo $company['id']; ?>">
+                                <i class="bi bi-building me-2"></i>Dados da Empresa
+                            </a>
+                            <a class="nav-link <?php echo $activeTab == 'addresses' ? 'active' : ''; ?>" href="?tab=addresses&company_id=<?php echo $company['id']; ?>">
+                                <i class="bi bi-geo-alt me-2"></i>Endereços
+                            </a>
+                            <a class="nav-link <?php echo $activeTab == 'faq' ? 'active' : ''; ?>" href="?tab=faq&company_id=<?php echo $company['id']; ?>">
+                                <i class="bi bi-question-circle me-2"></i>FAQ
+                            </a>
+                            <a class="nav-link <?php echo $activeTab == 'general' ? 'active' : ''; ?>" href="?tab=general&company_id=<?php echo $company['id']; ?>">
+                                <i class="bi bi-info-circle me-2"></i>Informações Gerais
+                            </a>
+                        <?php endif; ?>
                     </nav>
                     
                     <div class="position-absolute bottom-0 w-100 p-3">
-                        <?php if ($company): ?>
+                        <?php if ($company && $activeTab != 'companies'): ?>
                             <a href="public.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-success btn-sm w-100 mb-2">
                                 <i class="bi bi-eye me-2"></i>Ver Página Pública
                             </a>
                         <?php endif; ?>
+                        <a href="?tab=companies" class="btn btn-outline-light btn-sm w-100 mb-2">
+                            <i class="bi bi-buildings me-2"></i>Trocar Empresa
+                        </a>
                         <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
                             <i class="bi bi-box-arrow-right me-2"></i>Sair
                         </a>
@@ -129,6 +155,9 @@ $company = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="main-content p-4">
                     <?php
                     switch($activeTab) {
+                        case 'companies':
+                            include 'pages/companies.php';
+                            break;
                         case 'company':
                             include 'pages/company.php';
                             break;
@@ -142,7 +171,7 @@ $company = $stmt->fetch(PDO::FETCH_ASSOC);
                             include 'pages/general.php';
                             break;
                         default:
-                            include 'pages/company.php';
+                            include 'pages/companies.php';
                     }
                     ?>
                 </div>
