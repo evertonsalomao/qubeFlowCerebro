@@ -345,6 +345,56 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<!-- Modal para Importar CSV -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-upload me-2"></i>Importar Perguntas via CSV
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-info-circle me-2"></i>Formato do arquivo CSV:</h6>
+                        <ul class="mb-0">
+                            <li><strong>Coluna 1:</strong> Pergunta</li>
+                            <li><strong>Coluna 2:</strong> Resposta</li>
+                            <li><strong>Separador:</strong> Vírgula (,)</li>
+                            <li><strong>Codificação:</strong> UTF-8</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Exemplo:</h6>
+                        <code>
+                            "Qual o horário de funcionamento?","Funcionamos de segunda a sexta, das 8h às 18h."<br>
+                            "Vocês fazem entrega?","Sim, fazemos entrega em toda a cidade."
+                        </code>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label">Selecionar arquivo CSV *</label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file" 
+                               accept=".csv" required>
+                        <div class="form-text">
+                            Apenas arquivos .csv são aceitos. Máximo 2MB.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="import_csv" class="btn btn-success">
+                        <i class="bi bi-upload me-2"></i>Importar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 // Função para limpar o formulário (nova pergunta)
 function clearFaqForm() {
