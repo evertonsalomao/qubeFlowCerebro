@@ -41,6 +41,8 @@ if ($company_id) {
             background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
             min-height: 100vh;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
         .sidebar .nav-link {
             color: rgba(255,255,255,0.8);
@@ -134,7 +136,7 @@ if ($company_id) {
                         <?php endif; ?>
                     </nav>
                     
-                    <div class="position-absolute bottom-0 w-100 p-3">
+                    <div class="mt-auto p-3">
                         <?php if ($company && $activeTab != 'companies'): ?>
                             <a href="public.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-success btn-sm w-100 mb-2">
                                 <i class="bi bi-eye me-2"></i>Ver Página Pública
