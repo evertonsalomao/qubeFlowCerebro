@@ -192,9 +192,7 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <?php endif; ?>
                                                     
                                                     <a href="#" class="btn btn-outline-primary btn-sm edit-faq-btn"
-                                                       data-id="<?php echo $faq['id']; ?>"
-                                                       data-question="<?php echo htmlspecialchars($faq['question']); ?>"
-                                                       data-answer="<?php echo htmlspecialchars($faq['answer']); ?>"
+                                                       onclick="editFaq('<?php echo $faq['id']; ?>', '<?php echo addslashes(htmlspecialchars($faq['question'])); ?>', '<?php echo addslashes(htmlspecialchars($faq['answer'])); ?>')"
                                                        data-bs-toggle="modal" data-bs-target="#faqModal">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
@@ -256,33 +254,27 @@ $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+// Função para limpar o formulário (nova pergunta)
+function clearFaqForm() {
+    document.getElementById('faqModalTitle').textContent = 'Nova Pergunta';
+    document.getElementById('faqId').value = '';
+    document.getElementById('question').value = '';
+    document.getElementById('answer').value = '';
+}
+
+// Função para preencher formulário de edição
+function editFaq(id, question, answer) {
+    document.getElementById('faqModalTitle').textContent = 'Editar Pergunta';
+    document.getElementById('faqId').value = id;
+    document.getElementById('question').value = question;
+    document.getElementById('answer').value = answer;
+}
+
+// Event listener quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
-    // Função para limpar o formulário (nova pergunta)
-    function clearFaqForm() {
-        document.getElementById('faqModalTitle').textContent = 'Nova Pergunta';
-        document.getElementById('faqId').value = '';
-        document.getElementById('question').value = '';
-        document.getElementById('answer').value = '';
-    }
-    
-    // Event listener para botão "Nova Pergunta"
-    const newFaqBtn = document.querySelector('.btn[data-bs-target="#faqModal"]:not(.edit-faq-btn)');
+    // Event listener para botão "Nova Pergunta" - limpar formulário
+    const newFaqBtn = document.querySelector('button[data-bs-target="#faqModal"]');
     if (newFaqBtn) {
-        newFaqBtn.addEventListener('click', function() {
-            clearFaqForm();
-        });
+        newFaqBtn.addEventListener('click', clearFaqForm);
     }
-    
-    // Event listener para botões de editar
-    document.querySelectorAll('.edit-faq-btn').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Preencher o formulário com os dados da FAQ
-            document.getElementById('faqModalTitle').textContent = 'Editar Pergunta';
-            document.getElementById('faqId').value = this.dataset.id;
-            document.getElementById('question').value = this.dataset.question;
-            document.getElementById('answer').value = this.dataset.answer;
-        });
-    });
 });
