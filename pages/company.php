@@ -123,18 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                    value="<?php echo htmlspecialchars($company['main_whatsapp'] ?? ''); ?>" 
                                    placeholder="(11) 99999-9999">
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="business_hours" class="form-label">Horário de Funcionamento</label>
-                            <input type="text" class="form-control" id="business_hours" name="business_hours" 
-                                   value="<?php echo htmlspecialchars($company['business_hours'] ?? ''); ?>" 
-                                   placeholder="Seg-Sex: 8h-18h">
-                        </div>
-                    </div>
-
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-2"></i>Salvar Dados
-                        </button>
                     </div>
                 </form>
             </div>
