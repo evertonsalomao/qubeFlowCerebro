@@ -11,11 +11,28 @@ require_once 'config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-$query = "SELECT * FROM companies WHERE user_id = :user_id ORDER BY name";
-$stmt = $db->prepare($query);
-$stmt->bindParam(':user_id', $_SESSION['user_id']);
-$stmt->execute();
-$companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (isAdmin()) {
+    // Admin vê todas as empresas
+    $query = "SELECT c.*, u.email as owner_email FROM companies c 
+              LEFT JOIN users u ON c.user_id = u.id 
+              ORDER BY c.name";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    // Usuário comum vê apenas suas empresas + compartilhadas
+    $query = "SELECT DISTINCT c.*, u.email as owner_email,
+                     CASE WHEN c.user_id = :user_id THEN 1 ELSE 0 END as is_owner
+              FROM companies c 
+              LEFT JOIN users u ON c.user_id = u.id
+              LEFT JOIN user_company_access uca ON c.id = uca.company_id
+              WHERE c.user_id = :user_id OR uca.user_id = :user_id
+              ORDER BY c.name";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':user_id', $_SESSION['user_id']);
+    $stmt->execute();
+    $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 // Buscar empresa específica se selecionada
 $company = null;
@@ -115,6 +132,12 @@ if ($company_id) {
                             <i class="bi bi-buildings me-2"></i>Minhas Empresas
                         </a>
                         
+                        <?php if (isAdmin()): ?>
+                            <a class="nav-link <?php echo $activeTab == 'users' ? 'active' : ''; ?>" href="?tab=users">
+                                <i class="bi bi-people me-2"></i>Gerenciar Usuários
+                            </a>
+                        <?php endif; ?>
+                        
                         <?php if ($company): ?>
                             <div class="px-3 py-2">
                                 <small class="text-white-50 text-uppercase">Empresa Atual</small>
@@ -159,6 +182,13 @@ if ($company_id) {
                     switch($activeTab) {
                         case 'companies':
                             include 'pages/companies.php';
+                            break;
+                        case 'users':
+                            if (isAdmin()) {
+                                include 'pages/users.php';
+                            } else {
+                                echo '<div class="alert alert-danger">Acesso negado.</div>';
+                            }
                             break;
                         case 'company':
                             include 'pages/company.php';

@@ -2,30 +2,16 @@
 require_once 'includes/auth.php';
 
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['login'])) {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        
-        if (login($email, $password)) {
-            header('Location: dashboard.php');
-            exit();
-        } else {
-            $error = 'Email ou senha incorretos.';
-        }
-    } elseif (isset($_POST['register'])) {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        
-        if (strlen($password) < 6) {
-            $error = 'A senha deve ter pelo menos 6 caracteres.';
-        } elseif (register($email, $password)) {
-            $success = 'Conta criada com sucesso! Faça login.';
-        } else {
-            $error = 'Email já existe ou erro ao criar conta.';
-        }
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    
+    if (login($email, $password)) {
+        header('Location: dashboard.php');
+        exit();
+    } else {
+        $error = 'Email ou senha incorretos.';
     }
 }
 ?>
@@ -90,59 +76,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($success): ?>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i><?php echo $success; ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
-                    <?php endif; ?>
-
-                    <ul class="nav nav-pills nav-justified mb-4" id="authTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#login" type="button" role="tab">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#register" type="button" role="tab">
-                                <i class="bi bi-person-plus me-2"></i>Cadastrar
-                            </button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content" id="authTabsContent">
-                        <div class="tab-pane fade show active" id="login" role="tabpanel">
-                            <form method="POST">
-                                <div class="mb-3">
-                                    <label for="loginEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="loginEmail" name="email" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="loginPassword" class="form-label">Senha</label>
-                                    <input type="password" class="form-control" id="loginPassword" name="password" required>
-                                </div>
-                                <button type="submit" name="login" class="btn btn-primary w-100">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
-                                </button>
-                            </form>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <div class="tab-pane fade" id="register" role="tabpanel">
-                            <form method="POST">
-                                <div class="mb-3">
-                                    <label for="registerEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="registerEmail" name="email" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="registerPassword" class="form-label">Senha</label>
-                                    <input type="password" class="form-control" id="registerPassword" name="password" minlength="6" required>
-                                    <div class="form-text">Mínimo 6 caracteres</div>
-                                </div>
-                                <button type="submit" name="register" class="btn btn-primary w-100">
-                                    <i class="bi bi-person-plus me-2"></i>Criar Conta
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

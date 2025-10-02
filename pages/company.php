@@ -1,5 +1,5 @@
 <?php
-if (!$company) {
+if (!$company || !canAccessCompany($company['id'])) {
     echo '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Selecione uma empresa para gerenciar seus dados.</div>';
     return;
 }

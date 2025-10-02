@@ -50,19 +50,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } elseif (isset($_POST['delete_company'])) {
         try {
-            $query = "DELETE FROM companies WHERE id = :id AND user_id = :user_id";
+            // Verificar se pode excluir (apenas donos ou admins)
+            if (!isAdmin()) {
+                $query = "SELECT user_id FROM companies WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':id', $_POST['company_id']);
+                $stmt->execute();
+                $company_check = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$company_check || $company_check['user_id'] != $_SESSION['user_id']) {
+                    $error = 'Você não tem permissão para excluir esta empresa.';
+                    break;
+                }
+            }
+            
+            $query = "DELETE FROM companies WHERE id = :id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':id', $_POST['company_id']);
-            $stmt->bindParam(':user_id', $_SESSION['user_id']);
             
             if ($stmt->execute()) {
                 $success = 'Empresa excluída com sucesso!';
-                // Recarregar lista de empresas
-                $query = "SELECT * FROM companies WHERE user_id = :user_id ORDER BY name";
-                $stmt = $db->prepare($query);
-                $stmt->bindParam(':user_id', $_SESSION['user_id']);
-                $stmt->execute();
-                $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                header('Location: ?tab=companies');
+                exit();
             }
         } catch (Exception $e) {
             $error = 'Erro ao excluir empresa: ' . $e->getMessage();
@@ -117,6 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
                                             <h5 class="card-title text-primary mb-0"><?php echo htmlspecialchars($comp['name']); ?></h5>
+                                            <?php if (isset($comp['owner_email']) && $comp['owner_email'] != $user['email']): ?>
+                                                <small class="text-muted">Compartilhada por: <?php echo htmlspecialchars($comp['owner_email']); ?></small>
+                                            <?php endif; ?>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                                     <i class="bi bi-three-dots-vertical"></i>
@@ -127,12 +139,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                     </a></li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta empresa? Todos os dados serão perdidos!')">
-                                                            <input type="hidden" name="company_id" value="<?php echo $comp['id']; ?>">
-                                                            <button type="submit" name="delete_company" class="dropdown-item text-danger">
-                                                                <i class="bi bi-trash me-2"></i>Excluir
-                                                            </button>
-                                                        </form>
+                                                        <?php if (isAdmin() || !isset($comp['is_owner']) || $comp['is_owner']): ?>
+                                                            <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta empresa? Todos os dados serão perdidos!')">
+                                                                <input type="hidden" name="company_id" value="<?php echo $comp['id']; ?>">
+                                                                <button type="submit" name="delete_company" class="dropdown-item text-danger">
+                                                                    <i class="bi bi-trash me-2"></i>Excluir
+                                                                </button>
+                                                            </form>
+                                                        <?php else: ?>
+                                                            <span class="dropdown-item text-muted">
+                                                                <i class="bi bi-lock me-2"></i>Sem permissão
+                                                            </span>
+                                                        <?php endif; ?>
                                                     </li>
                                                 </ul>
                                             </div>

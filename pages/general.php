@@ -1,5 +1,5 @@
 <?php
-if (!$company_id) {
+if (!$company_id || !canAccessCompany($company_id)) {
     echo '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Configure primeiro os dados da empresa para poder gerenciar informações gerais.</div>';
     return;
 }
