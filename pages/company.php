@@ -19,12 +19,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         if ($company) {
             // Atualizar empresa existente
+            // Verificar se pode editar (apenas donos ou admins)
+            if (!isAdmin()) {
+                $query = "SELECT user_id FROM companies WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':id', $company['id']);
+                $stmt->execute();
+                $owner = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$owner || $owner['user_id'] != $_SESSION['user_id']) {
+                    $error = 'Você não tem permissão para editar esta empresa.';
+                    break;
+                }
+            }
+            
             $query = "UPDATE companies SET name = :name, cnpj = :cnpj, main_address = :main_address, 
                      main_phone = :main_phone, main_whatsapp = :main_whatsapp, business_hours = :business_hours, 
-                     slug = :slug, updated_at = NOW() WHERE id = :id AND user_id = :user_id";
+                     slug = :slug, updated_at = NOW() WHERE id = :id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':id', $company['id']);
-            $stmt->bindParam(':user_id', $_SESSION['user_id']);
         } else {
             echo '<div class="alert alert-danger">Empresa não encontrada.</div>';
             return;
@@ -41,10 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             $success = 'Dados da empresa salvos com sucesso!';
             // Recarregar dados da empresa
-            $query = "SELECT * FROM companies WHERE id = :id AND user_id = :user_id";
+            $query = "SELECT * FROM companies WHERE id = :id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':id', $company['id']);
-            $stmt->bindParam(':user_id', $_SESSION['user_id']);
             $stmt->execute();
             $company = $stmt->fetch(PDO::FETCH_ASSOC);
         }
@@ -123,6 +135,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                    value="<?php echo htmlspecialchars($company['main_whatsapp'] ?? ''); ?>" 
                                    placeholder="(11) 99999-9999">
                         </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="business_hours" class="form-label">Horário de Funcionamento</label>
+                            <input type="text" class="form-control" id="business_hours" name="business_hours" 
+                                   value="<?php echo htmlspecialchars($company['business_hours'] ?? ''); ?>" 
+                                   placeholder="Seg-Sex: 8h-18h">
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Salvar Dados
+                        </button>
                     </div>
                 </form>
             </div>

@@ -4,18 +4,6 @@ if (!$company_id || !canAccessCompany($company_id)) {
     return;
 }
 
-// Verificar se a empresa pertence ao usuário
-$query = "SELECT * FROM companies WHERE id = :id AND user_id = :user_id";
-$stmt = $db->prepare($query);
-$stmt->bindParam(':id', $company_id);
-$stmt->bindParam(':user_id', $_SESSION['user_id']);
-$stmt->execute();
-$company = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$company) {
-    echo '<div class="alert alert-danger">Empresa não encontrada ou sem permissão.</div>';
-    return;
-}
 
 $success = '';
 $error = '';
