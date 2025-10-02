@@ -20,16 +20,22 @@ if (isAdmin()) {
     $stmt->execute();
     $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    // Usuário comum vê apenas suas empresas + compartilhadas
-    $query = "SELECT DISTINCT c.*, u.email as owner_email,
+    // Usuário comum vê suas empresas + compartilhadas
+    $query = "SELECT c.*, u.email as owner_email,
                      CASE WHEN c.user_id = :user_id THEN 1 ELSE 0 END as is_owner
               FROM companies c 
               LEFT JOIN users u ON c.user_id = u.id
-              LEFT JOIN user_company_access uca ON c.id = uca.company_id
-              WHERE c.user_id = :user_id OR uca.user_id = :user_id
-              ORDER BY c.name";
+              WHERE c.user_id = :user_id
+              UNION
+              SELECT c.*, u.email as owner_email, 0 as is_owner
+              FROM companies c 
+              LEFT JOIN users u ON c.user_id = u.id
+              INNER JOIN user_company_access uca ON c.id = uca.company_id
+              WHERE uca.user_id = :user_id2
+              ORDER BY name";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':user_id', $_SESSION['user_id']);
+    $stmt->bindParam(':user_id2', $_SESSION['user_id']);
     $stmt->execute();
     $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
