@@ -5,6 +5,7 @@ Sistema completo em PHP 8 + MySQL + Bootstrap 5 para cadastro e gerenciamento de
 ## Funcionalidades
 
 ### 🔐 Sistema de Autenticação
+
 - Login e cadastro de usuários
 - Sessões seguras
 - Proteção de rotas
