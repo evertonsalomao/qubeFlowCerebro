@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 if (!$company_check || $company_check['user_id'] != $_SESSION['user_id']) {
                     $error = 'Você não tem permissão para excluir esta empresa.';
-                    break;
+                    // Não pode excluir
                 }
             }
             
