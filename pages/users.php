@@ -231,6 +231,13 @@ $all_companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <i class="bi bi-building"></i>
                                                 </button>
                                             <?php endif; ?>
+                                            <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                                                <button class="btn btn-outline-danger"
+                                                        onclick="deleteUser(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['email']); ?>')"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
