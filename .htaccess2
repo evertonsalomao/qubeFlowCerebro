@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Redirect to login if accessing root
+RewriteRule ^$ login.php [L]
+
+# Pretty URLs for public pages
+RewriteRule ^empresa/([a-zA-Z0-9\-]+)/?$ public.php?slug=$1 [L,QSA]
