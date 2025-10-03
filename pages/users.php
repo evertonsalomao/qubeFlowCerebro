@@ -231,13 +231,6 @@ $all_companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <i class="bi bi-building"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                                <button class="btn btn-outline-danger"
-                                                        onclick="deleteUser(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['email']); ?>')"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteUserModal">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -439,4 +432,27 @@ async function manageAccess(userId, email) {
         console.error('Erro ao carregar acessos:', error);
     }
 }
+
+function deleteUser(userId, email) {
+    document.getElementById('delete_user_id').value = userId;
+    document.getElementById('delete_user_email').textContent = email;
+    document.getElementById('delete_confirmation').value = '';
+    document.getElementById('confirm_delete_btn').disabled = true;
+}
+
+// Habilitar botão de exclusão apenas quando digitar CONFIRMAR
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmationInput = document.getElementById('delete_confirmation');
+    const deleteBtn = document.getElementById('confirm_delete_btn');
+    
+    if (confirmationInput && deleteBtn) {
+        confirmationInput.addEventListener('input', function() {
+            if (this.value === 'CONFIRMAR') {
+                deleteBtn.disabled = false;
+            } else {
+                deleteBtn.disabled = true;
+            }
+        });
+    }
+});
 </script>
