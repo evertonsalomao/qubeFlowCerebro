@@ -396,6 +396,54 @@ $all_companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<!-- Modal Excluir Usuário -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Excluir Usuário
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="delete_user_id" name="user_id">
+                    
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>ATENÇÃO:</strong> Esta ação é irreversível!
+                    </div>
+                    
+                    <p>Você está prestes a excluir o usuário:</p>
+                    <p><strong id="delete_user_email"></strong></p>
+                    
+                    <p class="text-muted">
+                        O usuário será removido permanentemente do sistema, incluindo todos os seus acessos compartilhados.
+                        <br><br>
+                        <strong>Nota:</strong> Se o usuário possuir empresas cadastradas, elas devem ser transferidas ou excluídas primeiro.
+                    </p>
+                    
+                    <div class="mb-3">
+                        <label for="delete_confirmation" class="form-label">
+                            Para confirmar, digite <strong>CONFIRMAR</strong> no campo abaixo:
+                        </label>
+                        <input type="text" class="form-control" id="delete_confirmation" 
+                               placeholder="Digite CONFIRMAR para habilitar a exclusão">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="delete_user" id="confirm_delete_btn" 
+                            class="btn btn-danger" disabled>
+                        <i class="bi bi-trash me-2"></i>Excluir Usuário
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 function editUser(user) {
     document.getElementById('edit_user_id').value = user.id;
@@ -436,6 +484,8 @@ async function manageAccess(userId, email) {
 function deleteUser(userId, email) {
     document.getElementById('delete_user_id').value = userId;
     document.getElementById('delete_user_email').textContent = email;
+    document.getElementById('delete_confirmation').value = '';
+    document.getElementById('confirm_delete_btn').disabled = true;
     document.getElementById('delete_confirmation').value = '';
     document.getElementById('confirm_delete_btn').disabled = true;
 }
