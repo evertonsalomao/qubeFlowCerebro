@@ -98,6 +98,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } catch (Exception $e) {
             $error = 'Erro ao gerenciar acessos: ' . $e->getMessage();
         }
+    } elseif (isset($_POST['delete_user'])) {
+        $user_id = $_POST['user_id'];
+        
+        // Verificar se não está tentando excluir a si mesmo
+        if ($user_id == $_SESSION['user_id']) {
+            $error = 'Você não pode excluir sua própria conta.';
+        } else {
+            try {
+                // Verificar se o usuário tem empresas
+                $query = "SELECT COUNT(*) as total FROM companies WHERE user_id = :user_id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':user_id', $user_id);
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($result['total'] > 0) {
+                    $error = 'Não é possível excluir usuário que possui empresas cadastradas. Transfira ou exclua as empresas primeiro.';
+                } else {
+                    // Excluir acessos compartilhados primeiro
+                    $query = "DELETE FROM user_company_access WHERE user_id = :user_id";
+                    $stmt = $db->prepare($query);
+                    $stmt->bindParam(':user_id', $user_id);
+                    $stmt->execute();
+                    
+                    // Excluir usuário
+                    $query = "DELETE FROM users WHERE id = :user_id";
+                    $stmt = $db->prepare($query);
+                    $stmt->bindParam(':user_id', $user_id);
+                    
+                    if ($stmt->execute()) {
+                        $success = 'Usuário excluído com sucesso!';
+                    }
+                }
+            } catch (Exception $e) {
+                $error = 'Erro ao excluir usuário: ' . $e->getMessage();
+            }
+        }
     }
 }
 
