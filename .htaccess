@@ -5,6 +5,7 @@ RewriteRule ^$ login.php [L]
 
 # Pretty URLs for public pages
 RewriteRule ^empresa/([a-zA-Z0-9\-]+)/?$ public.php?slug=$1 [L,QSA]
+RewriteRule ^empresa/([a-zA-Z0-9\-]+)/amp/?$ public-amp.php?slug=$1 [L,QSA]
 
 # Security
 <Files "config/*">

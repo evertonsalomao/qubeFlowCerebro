@@ -137,6 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                     <li><a class="dropdown-item" href="public.php?slug=<?php echo $comp['slug']; ?>" target="_blank">
                                                         <i class="bi bi-eye me-2"></i>Ver Página Pública
                                                     </a></li>
+                                                    <li><a class="dropdown-item" href="public-amp.php?slug=<?php echo $comp['slug']; ?>" target="_blank">
+                                                        <i class="bi bi-lightning me-2"></i>Ver Página AMP
+                                                    </a></li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <?php if (isAdmin() || !isset($comp['is_owner']) || $comp['is_owner']): ?>

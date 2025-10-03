@@ -170,6 +170,9 @@ if ($company_id) {
                             <a href="public.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-success btn-sm w-100 mb-2">
                                 <i class="bi bi-eye me-2"></i>Ver Página Pública
                             </a>
+                            <a href="public-amp.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-warning btn-sm w-100 mb-2">
+                                <i class="bi bi-lightning me-2"></i>Ver Página AMP
+                            </a>
                         <?php endif; ?>
                         <a href="?tab=companies" class="btn btn-outline-light btn-sm w-100 mb-2">
                             <i class="bi bi-buildings me-2"></i>Trocar Empresa

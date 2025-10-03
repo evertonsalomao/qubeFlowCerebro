@@ -79,6 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <a href="public.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-light btn-sm">
                             <i class="bi bi-eye me-2"></i>Ver Página Pública
                         </a>
+                        <a href="public-amp.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-warning btn-sm ms-2">
+                            <i class="bi bi-lightning me-2"></i>Ver AMP
+                        </a>
                     <?php endif; ?>
                 </div>
             </div>
