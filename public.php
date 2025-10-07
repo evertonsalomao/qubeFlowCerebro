@@ -99,6 +99,7 @@ if (!empty($addresses)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($company['name']); ?> - Informações da Empresa</title>
     <meta name="description" content="Informações completas sobre <?php echo htmlspecialchars($company['name']); ?>">
+    <link rel="amphtml" href="<?php echo 'https://' . $_SERVER['HTTP_HOST'] . '/empresa/' . $company['slug'] . '/amp'; ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     
