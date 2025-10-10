@@ -82,6 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <a href="public-amp.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-warning btn-sm ms-2">
                             <i class="bi bi-lightning me-2"></i>Ver AMP
                         </a>
+                        <a href="export-json.php?company_id=<?php echo $company['id']; ?>" class="btn btn-info btn-sm ms-2">
+                            <i class="bi bi-download me-2"></i>Baixar JSON
+                        </a>
                     <?php endif; ?>
                 </div>
             </div>

@@ -173,6 +173,9 @@ if ($company_id) {
                             <a href="public-amp.php?slug=<?php echo $company['slug']; ?>" target="_blank" class="btn btn-warning btn-sm w-100 mb-2">
                                 <i class="bi bi-lightning me-2"></i>Ver Página AMP
                             </a>
+                            <a href="export-json.php?company_id=<?php echo $company['id']; ?>" class="btn btn-info btn-sm w-100 mb-2">
+                                <i class="bi bi-download me-2"></i>Baixar JSON
+                            </a>
                         <?php endif; ?>
                         <a href="?tab=companies" class="btn btn-outline-light btn-sm w-100 mb-2">
                             <i class="bi bi-buildings me-2"></i>Trocar Empresa
