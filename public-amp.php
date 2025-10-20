@@ -359,10 +359,10 @@ if (!empty($addresses)) {
             <div class="card-body">
                 <?php if ($company['main_address']): ?>
                     <address class="address">
+                        <h3 style="color: #3b82f6; margin-bottom: 1rem; font-size: 1.1rem;">Endereço Principal</h3>
                         <div class="info-item">
-                            <span class="icon icon-location"></span>
                             <div class="info-content">
-                                <h3>Endereço Principal</h3>
+                                <h3>Endereço</h3>
                                 <p><?php echo nl2br(htmlspecialchars($company['main_address'])); ?></p>
                             </div>
                         </div>
@@ -372,7 +372,6 @@ if (!empty($addresses)) {
                 <div class="grid grid-2">
                     <?php if ($company['main_phone']): ?>
                         <div class="info-item">
-                            <span class="icon icon-phone"></span>
                             <div class="info-content">
                                 <h3>Telefone</h3>
                                 <p><?php echo htmlspecialchars($company['main_phone']); ?></p>
@@ -382,7 +381,6 @@ if (!empty($addresses)) {
 
                     <?php if ($company['main_whatsapp']): ?>
                         <div class="info-item">
-                            <span class="icon icon-whatsapp"></span>
                             <div class="info-content">
                                 <h3>WhatsApp</h3>
                                 <p><?php echo htmlspecialchars($company['main_whatsapp']); ?></p>
@@ -392,9 +390,8 @@ if (!empty($addresses)) {
 
                     <?php if ($company['business_hours']): ?>
                         <div class="info-item" style="grid-column: 1 / -1;">
-                            <span class="icon icon-clock"></span>
                             <div class="info-content">
-                                <h3>Horário de Funcionamento</h3>
+                                <h3>Horário</h3>
                                 <p><?php echo htmlspecialchars($company['business_hours']); ?></p>
                             </div>
                         </div>
@@ -413,37 +410,40 @@ if (!empty($addresses)) {
                     <?php foreach ($addresses as $address): ?>
                         <address class="address">
                             <h3 style="color: #3b82f6; margin-bottom: 1rem; font-size: 1.1rem;">
-                                <?php echo htmlspecialchars($address['name']); ?>
+                                ## INICIO DOS DADOS DA UNIDADE <?php echo strtoupper(htmlspecialchars($address['name'])); ?> ##
                             </h3>
                             
                             <?php if ($address['address']): ?>
-                                <p style="margin-bottom: 1rem;"><?php echo nl2br(htmlspecialchars($address['address'])); ?></p>
+                                <div style="margin-bottom: 1rem;">
+                                    <strong>Endereço:</strong><br>
+                                    <?php echo nl2br(htmlspecialchars($address['address'])); ?>
+                                </div>
                             <?php endif; ?>
 
                             <div class="grid grid-3">
                                 <?php if ($address['phone']): ?>
                                     <div class="info-item">
-                                        <span class="icon icon-phone"></span>
                                         <div class="info-content">
-                                            <p><?php echo htmlspecialchars($address['phone']); ?></p>
+                                            <strong>Telefone:</strong><br>
+                                            <?php echo htmlspecialchars($address['phone']); ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                                 
                                 <?php if ($address['whatsapp']): ?>
                                     <div class="info-item">
-                                        <span class="icon icon-whatsapp"></span>
                                         <div class="info-content">
-                                            <p><?php echo htmlspecialchars($address['whatsapp']); ?></p>
+                                            <strong>WhatsApp:</strong><br>
+                                            <?php echo htmlspecialchars($address['whatsapp']); ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                                 
                                 <?php if ($address['business_hours']): ?>
                                     <div class="info-item">
-                                        <span class="icon icon-clock"></span>
                                         <div class="info-content">
-                                            <p><?php echo htmlspecialchars($address['business_hours']); ?></p>
+                                            <strong>Horário:</strong><br>
+                                            <?php echo htmlspecialchars($address['business_hours']); ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -457,6 +457,10 @@ if (!empty($addresses)) {
                                     </p>
                                 </div>
                             <?php endif; ?>
+                            
+                            <h3 style="color: #6b7280; margin-top: 1rem; font-size: 0.9rem;">
+                                ## FIM DOS DADOS DA UNIDADE <?php echo strtoupper(htmlspecialchars($address['name'])); ?> ##
+                            </h3>
                         </address>
                     <?php endforeach; ?>
                 </div>
@@ -488,10 +492,10 @@ if (!empty($addresses)) {
                         <?php foreach ($faqs as $faq): ?>
                             <section>
                                 <header class="faq-header">
-                                    <?php echo htmlspecialchars($faq['question']); ?>
+                                    P: <?php echo htmlspecialchars($faq['question']); ?>
                                 </header>
                                 <div class="faq-content">
-                                    <?php echo nl2br(htmlspecialchars($faq['answer'])); ?>
+                                    <strong>R:</strong> <?php echo nl2br(htmlspecialchars($faq['answer'])); ?>
                                 </div>
                             </section>
                         <?php endforeach; ?>
