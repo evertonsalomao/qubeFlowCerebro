@@ -143,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                     <li><a class="dropdown-item" href="export-json.php?company_id=<?php echo $comp['id']; ?>">
                                                         <i class="bi bi-download me-2"></i>Baixar JSON
                                                     </a></li>
+                                                    <li><a class="dropdown-item" href="export-txt.php?company_id=<?php echo $comp['id']; ?>">
+                                                        <i class="bi bi-file-text me-2"></i>Baixar TXT
+                                                    </a></li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <?php if (isAdmin() || !isset($comp['is_owner']) || $comp['is_owner']): ?>

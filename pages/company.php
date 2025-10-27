@@ -85,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <a href="export-json.php?company_id=<?php echo $company['id']; ?>" class="btn btn-info btn-sm ms-2">
                             <i class="bi bi-download me-2"></i>Baixar JSON
                         </a>
+                        <a href="export-txt.php?company_id=<?php echo $company['id']; ?>" class="btn btn-secondary btn-sm ms-2">
+                            <i class="bi bi-file-text me-2"></i>Baixar TXT
+                        </a>
                     <?php endif; ?>
                 </div>
             </div>
