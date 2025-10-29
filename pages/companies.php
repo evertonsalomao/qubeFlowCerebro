@@ -122,18 +122,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="row">
                         <?php foreach ($companies as $comp): ?>
                             <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card h-100 border-0 shadow-sm">
+                                <div class="card h-100 border-0 shadow-sm position-relative">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
                                             <h5 class="card-title text-primary mb-0"><?php echo htmlspecialchars($comp['name']); ?></h5>
                                             <?php if (isset($comp['owner_email']) && $comp['owner_email'] != $user['email']): ?>
                                                 <small class="text-muted">Compartilhada por: <?php echo htmlspecialchars($comp['owner_email']); ?></small>
                                             <?php endif; ?>
-                                            <div class="dropdown">
+                                            <div class="dropdown" style="z-index: 1050;">
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu dropdown-menu-end">
                                                     <li><a class="dropdown-item" href="public.php?slug=<?php echo $comp['slug']; ?>" target="_blank">
                                                         <i class="bi bi-eye me-2"></i>Ver Página Pública
                                                     </a></li>

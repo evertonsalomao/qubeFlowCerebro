@@ -134,7 +134,7 @@ if (isset($_GET['edit'])) {
                     <div class="row">
                         <?php foreach ($addresses as $address): ?>
                             <div class="col-md-6 mb-4">
-                                <div class="card h-100">
+                                <div class="card h-100 position-relative">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-3 position-relative">
                                             <h5 class="card-title text-primary"><?php echo htmlspecialchars($address['name']); ?></h5>
@@ -142,7 +142,7 @@ if (isset($_GET['edit'])) {
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                <ul class="dropdown-menu dropdown-menu-end" style="z-index: 1051;">
                                                     <li><a class="dropdown-item edit-address-btn" href="#" 
                                                            data-id="<?php echo $address['id']; ?>"
                                                            data-name="<?php echo htmlspecialchars($address['name']); ?>"

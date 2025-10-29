@@ -20,6 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($stmt->execute()) {
             $success = 'Informações gerais salvas com sucesso!';
+            
+            // Gerar arquivo TXT automaticamente
+            require_once '../includes/auto-export.php';
+            autoExportCompanyData($company['id']);
+            
             $company['general_info'] = $general_info; // Atualizar variável local
         }
     } catch (Exception $e) {

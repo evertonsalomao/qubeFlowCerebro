@@ -179,6 +179,9 @@ if ($company_id) {
                             <a href="export-txt.php?company_id=<?php echo $company['id']; ?>" class="btn btn-secondary btn-sm w-100 mb-2">
                                 <i class="bi bi-file-text me-2"></i>Baixar TXT
                             </a>
+                            <a href="exports/empresa_<?php echo $company['slug']; ?>.txt" target="_blank" class="btn btn-info btn-sm w-100 mb-2">
+                                <i class="bi bi-link-45deg me-2"></i>Ver TXT Online
+                            </a>
                         <?php endif; ?>
                         <a href="?tab=companies" class="btn btn-outline-light btn-sm w-100 mb-2">
                             <i class="bi bi-buildings me-2"></i>Trocar Empresa
