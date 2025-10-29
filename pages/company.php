@@ -53,6 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($stmt->execute()) {
             $success = 'Dados da empresa salvos com sucesso!';
+            
+            // Gerar arquivo TXT automaticamente
+            require_once 'includes/auto-export.php';
+            autoExportCompanyData($company['id']);
+            
             // Recarregar dados da empresa
             $query = "SELECT * FROM companies WHERE id = :id";
             $stmt = $db->prepare($query);

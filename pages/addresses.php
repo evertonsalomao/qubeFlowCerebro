@@ -45,6 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($stmt->execute()) {
                 $success = 'Endereço salvo com sucesso!';
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             }
         } catch (Exception $e) {
             $error = 'Erro ao salvar endereço: ' . $e->getMessage();
@@ -58,6 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($stmt->execute()) {
                 $success = 'Endereço excluído com sucesso!';
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             }
         } catch (Exception $e) {
             $error = 'Erro ao excluir endereço: ' . $e->getMessage();
