@@ -91,6 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $success .= " e mais " . (count($errors) - 3) . " erro(s).";
                     }
                 }
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             } else {
                 $error = "Nenhuma pergunta foi importada. Erros: " . implode(', ', $errors);
             }
@@ -128,6 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($stmt->execute()) {
                 $success = 'Pergunta salva com sucesso!';
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             }
         } catch (Exception $e) {
             $error = 'Erro ao salvar pergunta: ' . $e->getMessage();
@@ -141,6 +149,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($stmt->execute()) {
                 $success = 'Pergunta excluída com sucesso!';
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             }
         } catch (Exception $e) {
             $error = 'Erro ao excluir pergunta: ' . $e->getMessage();
@@ -174,6 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->bindParam(':new_order', $new_order);
                 $stmt->bindParam(':id', $faq_id);
                 $stmt->execute();
+                
+                // Gerar arquivo TXT automaticamente
+                require_once '../includes/auto-export.php';
+                autoExportCompanyData($company['id']);
             }
         } catch (Exception $e) {
             $error = 'Erro ao mover pergunta: ' . $e->getMessage();
